@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_genre
+      author: aganethed
+      changes:
+        - createTable:
+            tableName: genre
+            remarks: "Жанр"
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                  remarks: "Первичный ключ"
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  remarks: "Название жанра"

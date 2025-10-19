@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_reader
+      author: aganethed
+      changes:
+        - createTable:
+            tableName: reader
+            remarks: "Читатель"
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                  remarks: "Первичный ключ"
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  remarks: "Имя"
+              - column:
+                  name: email
+                  type: VARCHAR(100)
+                  remarks: "Почта"

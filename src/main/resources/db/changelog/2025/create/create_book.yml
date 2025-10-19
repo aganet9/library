@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_book
+      author: aganethed
+      changes:
+        - createTable:
+            tableName: book
+            remarks: "Книга"
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                  remarks: "Первичный ключ"
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  remarks: "Название"
+              - column:
+                  name: author
+                  type: VARCHAR(100)
+                  remarks: "Автор"
+              - column:
+                  name: year
+                  type: INTEGER
+                  remarks: "Год издания"
+              - column:
+                  name: available
+                  type: BOOLEAN
+                  remarks: "Есть ли в наличии"

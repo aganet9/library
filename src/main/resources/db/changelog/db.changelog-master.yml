@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/2025/create/create_book.yml
+  - include:
+      file: db/changelog/2025/create/create_genre.yml
+  - include:
+      file: db/changelog/2025/create/create_book_genre.yml
+  - include:
+      file: db/changelog/2025/create/create_reader.yml
+  - include:
+      file: db/changelog/2025/create/create_loan.yml

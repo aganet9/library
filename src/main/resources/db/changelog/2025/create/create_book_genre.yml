@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_book_genre
+      author: aganethed
+      changes:
+        - createTable:
+            tableName: "book_genre"
+            remarks: "Жанр книги"
+            columns:
+              - column:
+                  name: book_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                  remarks: "Книга (FK -> Book)"
+              - column:
+                  name: genre_id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                  remarks: "Жанр (FK -> Genre)"
+        - addForeignKeyConstraint:
+            baseTableName: book_genre
+            baseColumnNames: book_id
+            referencedTableName: book
+            referencedColumnNames: id
+            constraintName: fk_book_genre_book
+        - addForeignKeyConstraint:
+            baseTableName: book_genre
+            baseColumnNames: genre_id
+            referencedTableName: genre
+            referencedColumnNames: id
+            constraintName: fk_book_genre_genre
