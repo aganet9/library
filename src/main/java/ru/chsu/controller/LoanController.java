@@ -1,6 +1,7 @@
 package ru.chsu.controller;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import ru.chsu.model.dto.LoanDto;
@@ -34,25 +35,25 @@ public class LoanController {
     }
 
     @POST
-    public LoanDto createLoan(RequestLoan dto){
+    public LoanDto createLoan(@Valid RequestLoan dto) {
         return loanService.createLoan(dto);
     }
 
     @PUT
     @Path("/{id}")
-    public LoanDto updateLoan(@PathParam("id") Long id, UpdateLoan dto){
+    public LoanDto updateLoan(@PathParam("id") Long id, @Valid UpdateLoan dto) {
         return loanService.updateLoan(id, dto);
     }
 
     @DELETE
     @Path("/{id}")
-    public void deleteLoan(@PathParam("id") Long id){
+    public void deleteLoan(@PathParam("id") Long id) {
         loanService.deleteLoan(id);
     }
 
     @PATCH
     @Path("/{id}/return")
-    public LoanDto returnBook(@PathParam("id") Long loanId){
+    public LoanDto returnBook(@PathParam("id") Long loanId) {
         return loanService.returnBook(loanId);
     }
 }

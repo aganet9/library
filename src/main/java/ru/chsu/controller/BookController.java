@@ -1,6 +1,7 @@
 package ru.chsu.controller;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import ru.chsu.model.dto.BookDto;
@@ -33,13 +34,13 @@ public class BookController {
     }
 
     @POST
-    public BookDto createBook(RequestBook dto) {
+    public BookDto createBook(@Valid RequestBook dto) {
         return bookService.createBook(dto);
     }
 
     @PUT
     @Path("/{id}")
-    public BookDto updateBook(@PathParam("id") Long id, RequestBook dto) {
+    public BookDto updateBook(@PathParam("id") Long id, @Valid RequestBook dto) {
         return bookService.updateBook(id, dto);
     }
 
@@ -59,7 +60,7 @@ public class BookController {
     @DELETE
     @Path("/{bookId}/genres/{genreName}")
     public void removeGenreFromBook(@PathParam("bookId") Long bookId,
-                                       @PathParam("genreName") String genreName) {
+                                    @PathParam("genreName") String genreName) {
         bookService.removeGenre(bookId, genreName);
     }
 

@@ -16,9 +16,11 @@ public interface LoanMapper {
     @Mapping(target = "readerName", source = "reader.name")
     @Mapping(target = "bookTitle", source = "book.title")
     LoanDto toDto(Loan loan);
+
     @Mapping(target = "reader", source = "readerId", qualifiedByName = "mapReaderId")
     @Mapping(target = "book", source = "bookId", qualifiedByName = "mapBookId")
     Loan toEntity(LoanDto loanDto);
+
     @Mapping(target = "reader", source = "readerId", qualifiedByName = "mapReaderId")
     @Mapping(target = "book", source = "bookId", qualifiedByName = "mapBookId")
     void updateFromDto(LoanDto loanDto, @MappingTarget Loan loan);

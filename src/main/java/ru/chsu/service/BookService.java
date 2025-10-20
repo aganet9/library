@@ -3,14 +3,15 @@ package ru.chsu.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import ru.chsu.exception.BookNotFoundException;
 import ru.chsu.exception.BookGenreException;
+import ru.chsu.exception.BookNotFoundException;
 import ru.chsu.exception.TitleUpdateException;
 import ru.chsu.mapper.BookMapper;
 import ru.chsu.model.dto.BookDto;
 import ru.chsu.model.dto.RequestBook;
 import ru.chsu.model.entity.Book;
 import ru.chsu.model.entity.Genre;
+import ru.chsu.model.entity.Loan;
 import ru.chsu.repository.BookRepository;
 import ru.chsu.repository.GenreRepository;
 
@@ -128,6 +129,18 @@ public class BookService {
     public void deleteBook(Long bookId) {
         Book book = bookRepository.findByIdOptional(bookId)
                 .orElseThrow(() -> new BookNotFoundException(bookId));
+
+        if (book.getGenres() != null) {
+            for (Genre genre : List.copyOf(book.getGenres())) {
+                book.removeGenre(genre);
+            }
+        }
+        if (book.getLoans() != null) {
+            for (Loan loan : List.copyOf(book.getLoans())) {
+                book.removeLoan(loan);
+            }
+        }
+
         bookRepository.delete(book);
     }
 

@@ -10,13 +10,17 @@ import ru.chsu.model.entity.Reader;
 @Mapper(componentModel = "jakarta", uses = {LoanMapper.class})
 public interface ReaderMapper {
     ReaderDto toDto(Reader reader);
+
     Reader toEntity(ReaderDto reader);
+
     void updateFromDto(ReaderDto readerDto, @MappingTarget Reader reader);
 
     RequestReader toRequest(Reader reader);
+
     @Mapping(target = "loans", ignore = true)
     @Mapping(target = "id", ignore = true)
     Reader toReader(RequestReader reader);
+
     @Mapping(target = "loans", ignore = true)
     @Mapping(target = "id", ignore = true)
     void updateFromRequest(RequestReader requestReader, @MappingTarget Reader reader);

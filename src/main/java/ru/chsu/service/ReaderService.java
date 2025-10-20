@@ -3,11 +3,13 @@ package ru.chsu.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import ru.chsu.exception.ReaderLoanException;
 import ru.chsu.exception.ReaderNotFoundException;
 import ru.chsu.exception.TitleUpdateException;
 import ru.chsu.mapper.ReaderMapper;
 import ru.chsu.model.dto.ReaderDto;
 import ru.chsu.model.dto.RequestReader;
+import ru.chsu.model.entity.Loan;
 import ru.chsu.model.entity.Reader;
 import ru.chsu.repository.ReaderRepository;
 
@@ -54,15 +56,26 @@ public class ReaderService {
     }
 
     @Transactional
-    public void deleteReaderById(Long id) {
-        Reader  reader = readerRepository.findByIdOptional(id)
+    public void deleteReader(Long id) {
+        Reader reader = readerRepository.findByIdOptional(id)
                 .orElseThrow(() -> new ReaderNotFoundException(id));
+
+        if (!reader.getLoans().isEmpty()) {
+            throw new ReaderLoanException(id);
+        }
+
+        if (reader.getLoans() != null) {
+            for (Loan loan : List.copyOf(reader.getLoans())) {
+                reader.removeLoan(loan);
+            }
+        }
+
         readerRepository.delete(reader);
     }
 
     @Transactional
     public ReaderDto changeName(Long id, String name) {
-        Reader  reader = readerRepository.findByIdOptional(id)
+        Reader reader = readerRepository.findByIdOptional(id)
                 .orElseThrow(() -> new ReaderNotFoundException(id));
         if (name == null || name.trim().isEmpty()) {
             throw new TitleUpdateException("Name is empty");

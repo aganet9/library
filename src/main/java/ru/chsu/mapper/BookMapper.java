@@ -17,20 +17,24 @@ public interface BookMapper {
     @Mapping(target = "loansCount", source = "loans", qualifiedByName = "mapLoansToCount")
     @Mapping(target = "genresName", source = "genres", qualifiedByName = "mapGenresToNames")
     BookDto toDto(Book book);
+
     @Mapping(target = "genres", ignore = true)
     @Mapping(target = "loans", ignore = true)
     Book toEntity(BookDto bookDto);
+
     @Mapping(target = "genres", ignore = true)
     @Mapping(target = "loans", ignore = true)
     void updateFromDto(BookDto bookDto, @MappingTarget Book book);
 
     @Mapping(target = "genresName", source = "genres", qualifiedByName = "mapGenresToNames")
     RequestBook toRequestBook(Book book);
+
     @Mapping(target = "loans", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "genres", ignore = true)
     @Mapping(target = "available", ignore = true)
     Book toBook(RequestBook requestBook);
+
     @Mapping(target = "loans", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "genres", ignore = true)

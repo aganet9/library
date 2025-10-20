@@ -15,15 +15,19 @@ import java.util.List;
 public interface GenreMapper {
     @Mapping(target = "bookIds", source = "books", qualifiedByName = "mapBooksToIds")
     GenreDto toDto(Genre genre);
-    @Mapping(target = "books", ignore = true )
+
+    @Mapping(target = "books", ignore = true)
     Genre toEntity(GenreDto genreDto);
+
     @Mapping(target = "books", ignore = true)
     void updateFromDto(GenreDto genreDto, @MappingTarget Genre genre);
 
     RequestGenre toRequest(Genre genreDto);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "books", ignore = true)
     Genre toGenre(RequestGenre requestGenre);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "books", ignore = true)
     void updateFromRequest(RequestGenre requestGenre, @MappingTarget Genre genre);

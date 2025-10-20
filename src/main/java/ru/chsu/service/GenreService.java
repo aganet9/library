@@ -7,6 +7,7 @@ import ru.chsu.exception.GenreNotFoundException;
 import ru.chsu.mapper.GenreMapper;
 import ru.chsu.model.dto.GenreDto;
 import ru.chsu.model.dto.RequestGenre;
+import ru.chsu.model.entity.Book;
 import ru.chsu.model.entity.Genre;
 import ru.chsu.repository.GenreRepository;
 
@@ -37,7 +38,7 @@ public class GenreService {
     }
 
     @Transactional
-    public GenreDto createGenre(RequestGenre dto){
+    public GenreDto createGenre(RequestGenre dto) {
         Genre genre = genreMapper.toGenre(dto);
         genreRepository.persist(genre);
         return genreMapper.toDto(genre);
@@ -55,7 +56,14 @@ public class GenreService {
     @Transactional
     public void deleteGenre(Long id) {
         Genre genre = genreRepository.findByIdOptional(id)
-                        .orElseThrow(() -> new GenreNotFoundException(id));
+                .orElseThrow(() -> new GenreNotFoundException(id));
+
+        if (genre.getBooks() != null) {
+            for (Book book : List.copyOf(genre.getBooks())) {
+                book.removeGenre(genre);
+            }
+        }
+
         genreRepository.delete(genre);
     }
 }

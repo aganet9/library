@@ -61,11 +61,15 @@ public class LoanService {
         Loan loan = loanRepository.findByIdOptional(loanId)
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
         loanProcess(loan, dto);
-        loan.setLoanDate(dto.getLoanDate());
-        if (dto.getReturnDate().isAfter(loan.getLoanDate())) {
-            loan.setReturnDate(dto.getReturnDate());
-        } else {
-            throw new ReturnDateException("Return date earlier than loan date");
+        if (dto.getLoanDate() != null) {
+            loan.setLoanDate(dto.getLoanDate());
+        }
+        if (dto.getReturnDate() != null) {
+            if (dto.getReturnDate().isAfter(loan.getLoanDate())) {
+                loan.setReturnDate(dto.getReturnDate());
+            } else {
+                throw new ReturnDateException("Return Date is null or earlier than loan date");
+            }
         }
         loanRepository.persist(loan);
         return loanMapper.toDto(loan);
@@ -91,8 +95,13 @@ public class LoanService {
 
     @Transactional
     public void deleteLoan(Long loanId) {
-        Loan loan =  loanRepository.findByIdOptional(loanId)
+        Loan loan = loanRepository.findByIdOptional(loanId)
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
+        Book book = loan.getBook();
+        if (book != null) {
+            book.setAvailable(true);
+            bookRepository.persist(book);
+        }
         loanRepository.delete(loan);
     }
 

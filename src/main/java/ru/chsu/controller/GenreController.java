@@ -1,6 +1,7 @@
 package ru.chsu.controller;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import ru.chsu.model.dto.GenreDto;
@@ -33,13 +34,13 @@ public class GenreController {
     }
 
     @POST
-    public GenreDto createGenre(RequestGenre requestGenre) {
+    public GenreDto createGenre(@Valid RequestGenre requestGenre) {
         return genreService.createGenre(requestGenre);
     }
 
     @PUT
     @Path("/{id}")
-    public GenreDto updateGenre(@PathParam("id") Long id, RequestGenre requestGenre) {
+    public GenreDto updateGenre(@PathParam("id") Long id, @Valid RequestGenre requestGenre) {
         return genreService.updateGenre(id, requestGenre);
     }
 

@@ -1,11 +1,16 @@
 package ru.chsu.model.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class RequestBook {
+    @NotNull
     private String title;
+    @NotNull
     private String author;
+    @NotNull
     private Integer year;
     private List<String> genresName = new ArrayList<>();
 
