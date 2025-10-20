@@ -63,5 +63,9 @@ public class BookController {
         bookService.removeGenre(bookId, genreName);
     }
 
-
+    @PATCH
+    @Path("/{id}")
+    public BookDto changeTitle(@PathParam("id") Long id, @QueryParam("title") String title) {
+        return bookService.changeTitle(id, title);
+    }
 }

@@ -3,8 +3,9 @@ package ru.chsu.service;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import ru.chsu.exception.BookNotFound;
+import ru.chsu.exception.BookNotFoundException;
 import ru.chsu.exception.BookGenreException;
+import ru.chsu.exception.TitleUpdateException;
 import ru.chsu.mapper.BookMapper;
 import ru.chsu.model.dto.BookDto;
 import ru.chsu.model.dto.RequestBook;
@@ -38,7 +39,7 @@ public class BookService {
     public BookDto getBookById(Long id) {
         return bookRepository.findByIdOptional(id)
                 .map(bookMapper::toDto)
-                .orElseThrow(() -> new BookNotFound(id));
+                .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     @Transactional
@@ -55,7 +56,7 @@ public class BookService {
     @Transactional
     public BookDto updateBook(Long bookId, RequestBook dto) {
         Book book = bookRepository.findByIdOptional(bookId)
-                .orElseThrow(() -> new BookNotFound(bookId));
+                .orElseThrow(() -> new BookNotFoundException(bookId));
 
         bookMapper.updateFromRequestBook(dto, book);
 
@@ -88,7 +89,7 @@ public class BookService {
         }
 
         Book book = bookRepository.findByIdOptional(bookId)
-                .orElseThrow(() -> new BookNotFound(bookId));
+                .orElseThrow(() -> new BookNotFoundException(bookId));
 
         Genre genre = genreRepository.findGenreByName(genreName);
         if (genre == null) {
@@ -112,7 +113,7 @@ public class BookService {
         }
 
         Book book = bookRepository.findByIdOptional(bookId)
-                .orElseThrow(() -> new BookNotFound(bookId));
+                .orElseThrow(() -> new BookNotFoundException(bookId));
 
         if (!book.getGenres().contains(genre)) {
             throw new BookGenreException("Book does not contain genre '" + genreName + "'");
@@ -126,7 +127,18 @@ public class BookService {
     @Transactional
     public void deleteBook(Long bookId) {
         Book book = bookRepository.findByIdOptional(bookId)
-                .orElseThrow(() -> new BookNotFound(bookId));
+                .orElseThrow(() -> new BookNotFoundException(bookId));
         bookRepository.delete(book);
+    }
+
+    public BookDto changeTitle(Long bookId, String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new TitleUpdateException("Title is empty");
+        }
+        Book book = bookRepository.findByIdOptional(bookId)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
+        book.setTitle(title);
+        bookRepository.persist(book);
+        return bookMapper.toDto(book);
     }
 }

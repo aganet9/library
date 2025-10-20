@@ -1,0 +1,57 @@
+package ru.chsu.service;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import ru.chsu.exception.GenreNotFoundException;
+import ru.chsu.mapper.GenreMapper;
+import ru.chsu.model.dto.GenreDto;
+import ru.chsu.model.dto.RequestGenre;
+import ru.chsu.model.entity.Genre;
+import ru.chsu.repository.GenreRepository;
+
+import java.util.List;
+
+@ApplicationScoped
+public class GenreService {
+
+    private final GenreRepository genreRepository;
+    private final GenreMapper genreMapper;
+
+    @Inject
+    public GenreService(GenreRepository genreRepository, GenreMapper genreMapper) {
+        this.genreRepository = genreRepository;
+        this.genreMapper = genreMapper;
+    }
+
+    public List<GenreDto> getAllGenres() {
+        return genreRepository.listAll().stream()
+                .map(genreMapper::toDto)
+                .toList();
+    }
+
+    public GenreDto getGenreById(Long id) {
+        return genreRepository.findByIdOptional(id)
+                .map(genreMapper::toDto)
+                .orElseThrow(() -> new GenreNotFoundException(id));
+    }
+
+    public GenreDto createGenre(RequestGenre dto){
+        Genre genre = genreMapper.toGenre(dto);
+        genreRepository.persist(genre);
+        return genreMapper.toDto(genre);
+    }
+
+    public GenreDto updateGenre(Long id, RequestGenre dto) {
+        Genre genre = genreRepository.findByIdOptional(id)
+                .orElseThrow(() -> new GenreNotFoundException(id));
+        genreMapper.updateFromRequest(dto, genre);
+        genreRepository.persist(genre);
+        return genreMapper.toDto(genre);
+    }
+
+    public void deleteGenre(Long id) {
+        Genre genre = genreRepository.findByIdOptional(id)
+                        .orElseThrow(() -> new GenreNotFoundException(id));
+        genreRepository.delete(genre);
+    }
+}
