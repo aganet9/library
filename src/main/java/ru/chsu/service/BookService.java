@@ -131,6 +131,7 @@ public class BookService {
         bookRepository.delete(book);
     }
 
+    @Transactional
     public BookDto changeTitle(Long bookId, String title) {
         if (title == null || title.trim().isEmpty()) {
             throw new TitleUpdateException("Title is empty");

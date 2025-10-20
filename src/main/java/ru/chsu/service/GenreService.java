@@ -2,6 +2,7 @@ package ru.chsu.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import ru.chsu.exception.GenreNotFoundException;
 import ru.chsu.mapper.GenreMapper;
 import ru.chsu.model.dto.GenreDto;
@@ -35,12 +36,14 @@ public class GenreService {
                 .orElseThrow(() -> new GenreNotFoundException(id));
     }
 
+    @Transactional
     public GenreDto createGenre(RequestGenre dto){
         Genre genre = genreMapper.toGenre(dto);
         genreRepository.persist(genre);
         return genreMapper.toDto(genre);
     }
 
+    @Transactional
     public GenreDto updateGenre(Long id, RequestGenre dto) {
         Genre genre = genreRepository.findByIdOptional(id)
                 .orElseThrow(() -> new GenreNotFoundException(id));
@@ -49,6 +52,7 @@ public class GenreService {
         return genreMapper.toDto(genre);
     }
 
+    @Transactional
     public void deleteGenre(Long id) {
         Genre genre = genreRepository.findByIdOptional(id)
                         .orElseThrow(() -> new GenreNotFoundException(id));
