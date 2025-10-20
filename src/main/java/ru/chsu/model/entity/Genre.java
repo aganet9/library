@@ -15,14 +15,14 @@ public class Genre {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private List<Book> books;
 
     public Genre() {
-
+        this.books = new ArrayList<>();
     }
 
     public Genre(String name) {
@@ -55,12 +55,18 @@ public class Genre {
     }
 
     public void addBook(Book book) {
-        this.books.add(book);
+        if (!books.contains(book)) {
+            books.add(book);
+            book.getGenres().add(this);
+        }
     }
 
     public void removeBook(Book book) {
-        this.books.remove(book);
+        if (books.remove(book)) {
+            book.getGenres().remove(this);
+        }
     }
+
 
     @Override
     public final boolean equals(Object o) {

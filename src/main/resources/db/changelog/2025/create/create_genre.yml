@@ -16,4 +16,6 @@ databaseChangeLog:
               - column:
                   name: name
                   type: VARCHAR(100)
+                  constraints:
+                    unique: true
                   remarks: "Название жанра"

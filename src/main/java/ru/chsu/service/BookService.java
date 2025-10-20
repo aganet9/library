@@ -2,10 +2,12 @@ package ru.chsu.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import ru.chsu.exception.BookNotFound;
+import ru.chsu.exception.BookGenreException;
 import ru.chsu.mapper.BookMapper;
-import ru.chsu.mapper.GenreMapper;
 import ru.chsu.model.dto.BookDto;
-import ru.chsu.model.dto.GenreDto;
+import ru.chsu.model.dto.RequestBook;
 import ru.chsu.model.entity.Book;
 import ru.chsu.model.entity.Genre;
 import ru.chsu.repository.BookRepository;
@@ -36,53 +38,95 @@ public class BookService {
     public BookDto getBookById(Long id) {
         return bookRepository.findByIdOptional(id)
                 .map(bookMapper::toDto)
-                .orElseThrow();
+                .orElseThrow(() -> new BookNotFound(id));
     }
 
-    public BookDto createBook(BookDto bookDto) {
-        Book book = bookMapper.toEntity(bookDto);
-        if (bookDto.getGenresName() != null) {
-            book.setGenres(genreRepository.findGenresByNames(bookDto.getGenresName()));
+    @Transactional
+    public BookDto createBook(RequestBook dto) {
+        Book book = bookMapper.toBook(dto);
+        genresProcess(book, dto);
+        book.setAvailable(true);
+        book.setLoans(List.of());
+
+        bookRepository.persist(book);
+        return bookMapper.toDto(book);
+    }
+
+    @Transactional
+    public BookDto updateBook(Long bookId, RequestBook dto) {
+        Book book = bookRepository.findByIdOptional(bookId)
+                .orElseThrow(() -> new BookNotFound(bookId));
+
+        bookMapper.updateFromRequestBook(dto, book);
+
+        genresProcess(book, dto);
+
+        bookRepository.persist(book);
+        return bookMapper.toDto(book);
+    }
+
+    private void genresProcess(Book book, RequestBook dto) {
+        if (dto.getGenresName() != null && !dto.getGenresName().isEmpty()) {
+            for (Genre genre : List.copyOf(book.getGenres())) {
+                book.removeGenre(genre);
+            }
+            for (String genreName : dto.getGenresName()) {
+                Genre genre = genreRepository.findGenreByName(genreName);
+                if (genre == null) {
+                    genre = new Genre(genreName);
+                    genreRepository.persist(genre);
+                }
+                book.addGenre(genre);
+            }
+        }
+    }
+
+    @Transactional
+    public BookDto addGenre(Long bookId, String genreName) {
+        if (genreName == null || genreName.trim().isEmpty()) {
+            throw new BookGenreException("Genre name is empty");
+        }
+
+        Book book = bookRepository.findByIdOptional(bookId)
+                .orElseThrow(() -> new BookNotFound(bookId));
+
+        Genre genre = genreRepository.findGenreByName(genreName);
+        if (genre == null) {
+            genre = new Genre(genreName);
+            genreRepository.persist(genre);
+        }
+
+        if (!book.getGenres().contains(genre)) {
+            book.addGenre(genre);
         }
 
         bookRepository.persist(book);
         return bookMapper.toDto(book);
     }
 
-    public BookDto updateBook(BookDto bookDto) {
-        Book book = bookRepository.findByIdOptional(bookDto.getId())
-                .orElseThrow();
-
-        bookMapper.updateFromDto(bookDto, book);
-
-        if (bookDto.getGenresName() != null && !bookDto.getGenresName().isEmpty()) {
-            book.setGenres(genreRepository.findGenresByNames(bookDto.getGenresName()));
+    @Transactional
+    public BookDto removeGenre(Long bookId, String genreName) {
+        Genre genre = genreRepository.findGenreByName(genreName);
+        if (genre == null) {
+            throw new BookGenreException("Genre '" + genreName + "' not found");
         }
 
-        bookRepository.persist(book);
-
-        return bookMapper.toDto(book);
-    }
-
-    public BookDto updateGenres(Long bookId, List<GenreDto> genresDto) {
         Book book = bookRepository.findByIdOptional(bookId)
-                .orElseThrow();
+                .orElseThrow(() -> new BookNotFound(bookId));
 
-        List<String> genreNames = genresDto.stream()
-                .map(GenreDto::getName)
-                .toList();
+        if (!book.getGenres().contains(genre)) {
+            throw new BookGenreException("Book does not contain genre '" + genreName + "'");
+        }
 
-        List<Genre> genres = genreRepository.findGenresByNames(genreNames);
-
-        book.setGenres(genres);
+        book.removeGenre(genre);
         bookRepository.persist(book);
         return bookMapper.toDto(book);
     }
 
-    public BookDto deleteBook(Long bookId) {
+    @Transactional
+    public void deleteBook(Long bookId) {
         Book book = bookRepository.findByIdOptional(bookId)
-                .orElseThrow();
+                .orElseThrow(() -> new BookNotFound(bookId));
         bookRepository.delete(book);
-        return bookMapper.toDto(book);
     }
 }

@@ -37,7 +37,8 @@ public class Book {
     private List<Loan> loans;
 
     public Book() {
-
+        this.genres = new ArrayList<>();
+        this.loans = new ArrayList<>();
     }
 
     public Book(String title, String author, Integer year, boolean available) {
@@ -116,11 +117,16 @@ public class Book {
     }
 
     public void addGenre(Genre genre) {
-        this.genres.add(genre);
+        if (!genres.contains(genre)) {
+            genres.add(genre);
+            genre.getBooks().add(this);
+        }
     }
 
     public void removeGenre(Genre genre) {
-        this.genres.remove(genre);
+        if (genres.remove(genre)) {
+            genre.getBooks().remove(this);
+        }
     }
 
     @Override

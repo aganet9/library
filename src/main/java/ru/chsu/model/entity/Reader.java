@@ -25,7 +25,7 @@ public class Reader {
     private List<Loan> loans;
 
     public Reader() {
-
+        this.loans = new ArrayList<>();
     }
 
     public Reader(String name, String email) {

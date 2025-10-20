@@ -11,4 +11,7 @@ public class GenreRepository implements PanacheRepository<Genre> {
     public List<Genre> findGenresByNames(List<String> names) {
         return list("name IN ?1", names);
     }
+    public Genre findGenreByName(String genreName) {
+        return this.find("name", genreName).firstResult();
+    }
 }

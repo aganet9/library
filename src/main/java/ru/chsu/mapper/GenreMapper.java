@@ -5,12 +5,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import ru.chsu.model.dto.GenreDto;
+import ru.chsu.model.dto.RequestGenre;
 import ru.chsu.model.entity.Book;
 import ru.chsu.model.entity.Genre;
 
 import java.util.List;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = "jakarta")
 public interface GenreMapper {
     @Mapping(target = "bookIds", source = "books", qualifiedByName = "mapBooksToIds")
     GenreDto toDto(Genre genre);
@@ -18,6 +19,14 @@ public interface GenreMapper {
     Genre toEntity(GenreDto genreDto);
     @Mapping(target = "books", ignore = true)
     void updateFromDto(GenreDto genreDto, @MappingTarget Genre genre);
+
+    RequestGenre toRequest(Genre genreDto);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "books", ignore = true)
+    Genre toGenre(RequestGenre requestGenre);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "books", ignore = true)
+    void updateFromRequest(RequestGenre requestGenre, @MappingTarget Genre genre);
 
     @Named("mapBooksToIds")
     default List<Long> mapBooksToIds(List<Book> books) {

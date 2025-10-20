@@ -5,7 +5,7 @@ import org.mapstruct.MappingTarget;
 import ru.chsu.model.dto.ReaderDto;
 import ru.chsu.model.entity.Reader;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = "jakarta", uses = {LoanMapper.class})
 public interface ReaderMapper {
     ReaderDto toDto(Reader reader);
     Reader toEntity(ReaderDto reader);
