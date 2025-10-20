@@ -3,6 +3,7 @@ package ru.chsu.model.entity;
 import jakarta.persistence.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,6 +45,8 @@ public class Book {
         this.author = author;
         this.year = year;
         this.available = available;
+        this.genres = new ArrayList<>();
+        this.loans = new ArrayList<>();
     }
 
     public Long getId() {
@@ -78,11 +81,11 @@ public class Book {
         this.year = year;
     }
 
-    public Boolean getAvailable() {
+    public boolean getAvailable() {
         return available;
     }
 
-    public void setAvailable(Boolean available) {
+    public void setAvailable(boolean available) {
         this.available = available;
     }
 
@@ -100,6 +103,24 @@ public class Book {
 
     public void setLoans(List<Loan> loans) {
         this.loans = loans;
+    }
+
+    public void addLoan(Loan loan) {
+        this.loans.add(loan);
+        loan.setBook(this);
+    }
+
+    public void removeLoan(Loan loan) {
+        this.loans.remove(loan);
+        loan.setBook(null);
+    }
+
+    public void addGenre(Genre genre) {
+        this.genres.add(genre);
+    }
+
+    public void removeGenre(Genre genre) {
+        this.genres.remove(genre);
     }
 
     @Override

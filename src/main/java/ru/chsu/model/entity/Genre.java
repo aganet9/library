@@ -3,6 +3,7 @@ package ru.chsu.model.entity;
 import jakarta.persistence.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,6 +27,7 @@ public class Genre {
 
     public Genre(String name) {
         this.name = name;
+        this.books = new ArrayList<>();
     }
 
     public Long getId() {
@@ -50,6 +52,14 @@ public class Genre {
 
     public void setBooks(List<Book> books) {
         this.books = books;
+    }
+
+    public void addBook(Book book) {
+        this.books.add(book);
+    }
+
+    public void removeBook(Book book) {
+        this.books.remove(book);
     }
 
     @Override

@@ -3,6 +3,7 @@ package ru.chsu.model.entity;
 import jakarta.persistence.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,7 @@ public class Reader {
     public Reader(String name, String email) {
         this.name = name;
         this.email = email;
+        this.loans = new ArrayList<>();
     }
 
     public Long getId() {
@@ -62,6 +64,16 @@ public class Reader {
 
     public void setLoans(List<Loan> loans) {
         this.loans = loans;
+    }
+
+    public void addLoan(Loan loan) {
+        this.loans.add(loan);
+        loan.setReader(this);
+    }
+
+    public void removeLoan(Loan loan) {
+        this.loans.remove(loan);
+        loan.setReader(null);
     }
 
     @Override
