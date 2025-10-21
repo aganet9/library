@@ -49,4 +49,10 @@ public class GenreController {
     public void deleteGenre(@PathParam("id") Long id) {
         genreService.deleteGenre(id);
     }
+
+    @PATCH
+    @Path("/{id}/name/{genreName}")
+    public GenreDto patchGenreName(@PathParam("id")  Long id, @PathParam("genreName") String genreName) {
+        return genreService.patchGenreName(id, genreName);
+    }
 }

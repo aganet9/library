@@ -11,7 +11,6 @@ import ru.chsu.model.dto.BookDto;
 import ru.chsu.model.dto.RequestBook;
 import ru.chsu.model.entity.Book;
 import ru.chsu.model.entity.Genre;
-import ru.chsu.model.entity.Loan;
 import ru.chsu.repository.BookRepository;
 import ru.chsu.repository.GenreRepository;
 
@@ -133,11 +132,6 @@ public class BookService {
         if (book.getGenres() != null) {
             for (Genre genre : List.copyOf(book.getGenres())) {
                 book.removeGenre(genre);
-            }
-        }
-        if (book.getLoans() != null) {
-            for (Loan loan : List.copyOf(book.getLoans())) {
-                book.removeLoan(loan);
             }
         }
 

@@ -54,6 +54,17 @@ public class GenreService {
     }
 
     @Transactional
+    public GenreDto patchGenreName(Long id, String name) {
+        Genre genre = genreRepository.findByIdOptional(id)
+                .orElseThrow(() -> new GenreNotFoundException(id));
+        if (name != null) {
+            genre.setName(name);
+        }
+        genreRepository.persist(genre);
+        return genreMapper.toDto(genre);
+    }
+
+    @Transactional
     public void deleteGenre(Long id) {
         Genre genre = genreRepository.findByIdOptional(id)
                 .orElseThrow(() -> new GenreNotFoundException(id));
