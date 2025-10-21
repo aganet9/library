@@ -1,9 +1,9 @@
 package ru.chsu.model.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public class RequestGenre {
-    @NotNull
+    @NotBlank
     private String name;
 
     public String getName() {

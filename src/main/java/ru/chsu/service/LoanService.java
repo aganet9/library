@@ -60,6 +60,7 @@ public class LoanService {
     public LoanDto updateLoan(Long loanId, UpdateLoan dto) {
         Loan loan = loanRepository.findByIdOptional(loanId)
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
+        loan.getBook().setAvailable(true);
         loanProcess(loan, dto);
         if (dto.getLoanDate() != null) {
             loan.setLoanDate(dto.getLoanDate());

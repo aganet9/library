@@ -1,11 +1,13 @@
 package ru.chsu.model.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 public class RequestReader {
-    @NotNull
+    @NotBlank
     private String name;
-    @NotNull
+    @NotBlank
+    @Email
     private String email;
 
     public String getName() {
